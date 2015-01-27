@@ -1,9 +1,14 @@
 using Codecs
 
-include("warm_up_excercise.jl")
+include("warmUpExercise.jl")
+include("computeCost.jl")
+#include("gradientDescent.jl")
+#include("featureNormalize.jl")
+#include("computeCostMulti.jl")
+#include("gradientDescentMulti.jl")
+#include("normalEqn.jl")
 
 function submit(partId)
-    partId = 1
 
     (login,password) = ("thomas.mccolgan@gmail.com","J92J54ztjs")
     
@@ -12,11 +17,12 @@ function submit(partId)
     (result,restype) = submitSolutionWeb(login, thisPartId, output(thisPartId, ""), source(thisPartId))
     result = take76(base64encode(result))
 
-    saveAsFile = "text.txt"
+    saveAsFile = "submission-$(homework_id())-$(partId).txt"
 
     fid = open(saveAsFile, "w")
     write(fid, result)
     close(fid)
+    println("Saved submission file as $saveAsFile")
 end
 
 function homework_id()
@@ -26,13 +32,12 @@ end
 function take76(str)
     # Breaks an encoding string into a mime proper format
     segments = convert(Int64, ceil(length(str)/76))
-    println
     tmp = ASCIIString[]
     index = 0
     index_end = index + 76
     for i in [1:segments]
         if index_end > length(str)
-            push!(tmp, str[index+1:])
+            push!(tmp, str[index+1:end])
         else
             if index == 1
                 push!(tmp, str[index:index_end])
@@ -49,7 +54,7 @@ end
 function sources()
     # Separated by part
     [
-     "warm_up_excercise.jl",
+     "warmUpExercise.jl",
      "computeCost.jl",
      "gradientDescent.jl",
      "featureNormalize.jl",
@@ -95,35 +100,40 @@ end
 
 function output(partId, auxstring)
     # Random Test Cases
-    #X1 = [ones(20,1) (exp(1) + exp(2) * (0.1:0.1:2))']
-    #Y1 = X1(:,2) + sin(X1(:,1)) + cos(X1(:,2))
-    #X2 = [X1 X1(:,2).^0.5 X1(:,2).^0.25]
-    #Y2 = Y1.^0.5 + Y1
+    X1 = [ones(20,1) reshape((exp(1) + exp(2) * (0.1:0.1:2)),20,1)]
+    Y1 = X1[:,2] + sin(X1[:,1]) + cos(X1[:,2])
+    X2 = [X1 X1[:,2].^0.5 X1[:,2].^0.25]
+    Y2 = Y1.^0.5 + Y1
     if partId == 1
-        tmp = reshape(warmUpExercise(), length(warmUpExercise()), 1)'
-        join(map(x -> @sprintf("%0.5f ", x), tmp));
-    #elseif partId == 2
-    #    out = sprintf("%0.5f ", computeCost(X1, Y1, [0.5 -0.5]'))
-    #elseif partId == 3
-    #    out = sprintf("%0.5f ", gradientDescent(X1, Y1, [0.5 -0.5]', 0.01, 10))
-    #elseif partId == 4
-    #    out = sprintf("%0.5f ", featureNormalize(X2(:,2:4)))
-    #elseif partId == 5
-    #    out = sprintf("%0.5f ", computeCostMulti(X2, Y2, [0.1 0.2 0.3 0.4]'))
-    #elseif partId == 6
-    #    out = sprintf("%0.5f ", gradientDescentMulti(X2, Y2, [-0.1 -0.2 -0.3 -0.4]', 0.01, 10))
-    #elseif partId == 7
-    #    out = sprintf("%0.5f ", normalEqn(X2, Y2))
+      ret = warmUpExercise()
+    elseif partId == 2
+      ret = computeCost(X1, Y1, [0.5 -0.5]')
+    elseif partId == 3
+      out = sprintf("%0.5f ", gradientDescent(X1, Y1, [0.5 -0.5]', 0.01, 10))
+    elseif partId == 4
+      out = sprintf("%0.5f ", featureNormalize(X2(:,2:4)))
+    elseif partId == 5
+      out = sprintf("%0.5f ", computeCostMulti(X2, Y2, [0.1 0.2 0.3 0.4]'))
+    elseif partId == 6
+      out = sprintf("%0.5f ", gradientDescentMulti(X2, Y2, [-0.1 -0.2 -0.3 -0.4]', 0.01, 10))
+    elseif partId == 7
+      out = sprintf("%0.5f ", normalEqn(X2, Y2))
     end 
+    if length(ret) > 1
+      tmp = reshape(ret, length(ret), 1)'
+    else
+      tmp = [ret]
+    end
+    join(map(x -> @sprintf("%0.5f ", x), tmp));
 end
 
 # ========================= CHALLENGE HELPERS =========================
 
 function submitSolutionWeb(email, part, output, source)
-    println(output)
-    println("$(homework_id())-$(part)")
     result = string("{\"assignment_part_sid\":\"",base64encode("$(homework_id())-$(part)"),"\",\"email_address\":\"",base64encode(email),"\",\"submission\":\"",base64encode(output),"\",\"submission_aux\":\"",base64encode(source),"\"}")
-    println(result)
     str = "Web-submission"
     return (result, str)
 end
+
+submit(1)
+submit(2)
