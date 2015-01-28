@@ -109,15 +109,15 @@ function output(partId, auxstring)
     elseif partId == 2
       ret = computeCost(X1, Y1, [0.5 -0.5]')
     elseif partId == 3
-      out = sprintf("%0.5f ", gradientDescent(X1, Y1, [0.5 -0.5]', 0.01, 10))
+      ret = gradientDescent(X1, Y1, [0.5 -0.5]', 0.01, 10)
     elseif partId == 4
-      out = sprintf("%0.5f ", featureNormalize(X2(:,2:4)))
+      ret = featureNormalize(X2(:,2:4))
     elseif partId == 5
-      out = sprintf("%0.5f ", computeCostMulti(X2, Y2, [0.1 0.2 0.3 0.4]'))
+      ret = computeCostMulti(X2, Y2, [0.1 0.2 0.3 0.4]')
     elseif partId == 6
-      out = sprintf("%0.5f ", gradientDescentMulti(X2, Y2, [-0.1 -0.2 -0.3 -0.4]', 0.01, 10))
+      ret = gradientDescentMulti(X2, Y2, [-0.1 -0.2 -0.3 -0.4]', 0.01, 10)
     elseif partId == 7
-      out = sprintf("%0.5f ", normalEqn(X2, Y2))
+      ret = normalEqn(X2, Y2)
     end 
     if length(ret) > 1
       tmp = reshape(ret, length(ret), 1)'
