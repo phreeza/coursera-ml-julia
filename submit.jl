@@ -3,7 +3,7 @@ using Codecs
 include("warmUpExercise.jl")
 include("computeCost.jl")
 include("gradientDescent.jl")
-#include("featureNormalize.jl")
+include("featureNormalize.jl")
 #include("computeCostMulti.jl")
 #include("gradientDescentMulti.jl")
 #include("normalEqn.jl")
@@ -111,7 +111,7 @@ function output(partId, auxstring)
     elseif partId == 3
       ret = gradientDescent(X1, Y1, [0.5 -0.5]', 0.01, 10)[1]
     elseif partId == 4
-      ret = featureNormalize(X2(:,2:4))
+      ret = featureNormalize(X2[:,2:4])[1]
     elseif partId == 5
       ret = computeCostMulti(X2, Y2, [0.1 0.2 0.3 0.4]')
     elseif partId == 6
@@ -136,4 +136,4 @@ function submitSolutionWeb(email, part, output, source)
     return (result, str)
 end
 
-submit(3)
+submit(4)
