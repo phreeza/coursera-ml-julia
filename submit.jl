@@ -4,9 +4,9 @@ include("warmUpExercise.jl")
 include("computeCost.jl")
 include("gradientDescent.jl")
 include("featureNormalize.jl")
-#include("computeCostMulti.jl")
-#include("gradientDescentMulti.jl")
-#include("normalEqn.jl")
+include("computeCostMulti.jl")
+include("gradientDescentMulti.jl")
+include("normalEqn.jl")
 
 function submit(partId)
 
@@ -115,7 +115,7 @@ function output(partId, auxstring)
     elseif partId == 5
       ret = computeCostMulti(X2, Y2, [0.1 0.2 0.3 0.4]')
     elseif partId == 6
-      ret = gradientDescentMulti(X2, Y2, [-0.1 -0.2 -0.3 -0.4]', 0.01, 10)
+      ret = gradientDescentMulti(X2, Y2, [-0.1 -0.2 -0.3 -0.4]', 0.01, 10)[1]
     elseif partId == 7
       ret = normalEqn(X2, Y2)
     end 
@@ -136,4 +136,4 @@ function submitSolutionWeb(email, part, output, source)
     return (result, str)
 end
 
-submit(4)
+submit(7)
